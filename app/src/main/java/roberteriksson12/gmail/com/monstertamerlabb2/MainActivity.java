@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import roberteriksson12.gmail.com.monstertamerlabb2.Database.DBHelper;
+import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Dungeon;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(dbHelper.DB_LOGTAG, "Skapar databasen");
-        //dbHelper.addDungeon("Grotto", 2, 5);
+        //Dungeon dungeon = dbHelper.addDungeon("Depts", 3, 10);
         //dbHelper.addMonster("Slime", 1, 1);
         //dbHelper.addTamedMonster("Slime", 2, 0, 1);
     }

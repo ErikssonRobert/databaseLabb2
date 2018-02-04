@@ -6,6 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Dungeon;
+import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Monster;
+import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.TamedMonster;
+
 /**
  * Created by Robert on 2018-02-04.
  */
@@ -80,29 +84,33 @@ public class DBHelper extends SQLiteOpenHelper{
         return DB_TAMEDMONSTERS_CREATE;
     }
 
-    public void addDungeon(String name, int floors, int exp){
+    public Dungeon addDungeon(String name, int floors, int exp){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_DUNGEON_NAME, name);
         contentValues.put(COLUMN_DUNGEON_FLOORS, floors);
         contentValues.put(COLUMN_DUNGEON_EXP, exp);
         long id = db.insert(TABLE_DUNGEON, null, contentValues);
+        Dungeon dungeon = new Dungeon(name, floors, exp);
         Log.d(DB_LOGTAG, "Adding values to dungeon table: " + id);
         db.close();
+        return dungeon;
     }
 
-    public void addMonster(String name, int lvl, int d_Id) {
+    public Monster addMonster(String name, int lvl, int d_Id) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_MONSTER_NAME, name);
         contentValues.put(COLUMN_MONSTER_LVL, lvl);
         contentValues.put(COLUMN_MONSTER_DUNGEONID, d_Id);
         long id = db.insert(TABLE_MONSTER, null, contentValues);
+        Monster monster = new Monster(name, lvl, d_Id);
         Log.d(DB_LOGTAG, "Adding values to monster table: " + id);
         db.close();
+        return monster;
     }
 
-    public void addTamedMonster(String name, int lvl, int exp, int order) {
+    public TamedMonster addTamedMonster(String name, int lvl, int exp, int order) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_TAMEDMONSTERS_NAME, name);
@@ -110,10 +118,23 @@ public class DBHelper extends SQLiteOpenHelper{
         contentValues.put(COLUMN_TAMEDMONSTERS_EXP, exp);
         contentValues.put(COLUMN_TAMEDMONSTERS_ORDER, order);
         long id = db.insert(TABLE_TAMEDMONSTERS, null, contentValues);
+        TamedMonster tamedMonster = new TamedMonster(name, lvl, exp, order);
         Log.d(DB_LOGTAG, "Adding values to tamed monster table: " + id);
         db.close();
+        return tamedMonster;
     }
 
+    public void getDungeons() {
+
+    }
+
+    public void getMonsters() {
+
+    }
+
+    public void getTamedMonsters() {
+
+    }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
