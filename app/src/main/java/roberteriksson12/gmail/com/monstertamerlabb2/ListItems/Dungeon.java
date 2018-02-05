@@ -9,10 +9,4 @@ public class Dungeon {
     public String name;
     public int floors;
     public int exp;
-
-    public Dungeon(String name, int floors, int exp) {
-        this.name = name;
-        this.floors = floors;
-        this.exp = exp;
-    }
 }

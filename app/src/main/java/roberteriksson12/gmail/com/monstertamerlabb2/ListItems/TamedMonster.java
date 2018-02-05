@@ -10,11 +10,4 @@ public class TamedMonster {
     public int lvl;
     public int exp;
     public int order;
-
-    public TamedMonster(String name, int lvl, int exp, int order) {
-        this.name = name;
-        this.lvl = lvl;
-        this.exp = exp;
-        this.order = order;
-    }
 }

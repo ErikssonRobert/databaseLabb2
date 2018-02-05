@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/dun"
+        android:title="Dungeons"/>
+    <item
+        android:id="@+id/mon"
+        android:title="Monsters"/>
+    <item
+        android:id="@+id/tam"
+        android:title="Tamed Monsters"/>
+
+</menu>

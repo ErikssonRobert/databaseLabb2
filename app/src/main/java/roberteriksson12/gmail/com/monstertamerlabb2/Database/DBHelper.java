@@ -95,7 +95,10 @@ public class DBHelper extends SQLiteOpenHelper{
         contentValues.put(COLUMN_DUNGEON_FLOORS, floors);
         contentValues.put(COLUMN_DUNGEON_EXP, exp);
         long id = db.insert(TABLE_DUNGEON, null, contentValues);
-        Dungeon dungeon = new Dungeon(name, floors, exp);
+        Dungeon dungeon = new Dungeon();
+        dungeon.name = name;
+        dungeon.floors = floors;
+        dungeon.exp = exp;
         Log.d(DB_LOGTAG, "Adding values to dungeon table: " + id);
         db.close();
         return dungeon;
@@ -125,14 +128,40 @@ public class DBHelper extends SQLiteOpenHelper{
         contentValues.put(COLUMN_TAMEDMONSTERS_EXP, exp);
         contentValues.put(COLUMN_TAMEDMONSTERS_ORDER, order);
         long id = db.insert(TABLE_TAMEDMONSTERS, null, contentValues);
-        TamedMonster tamedMonster = new TamedMonster(name, lvl, exp, order);
+        TamedMonster tamedMonster = new TamedMonster();
+        tamedMonster.name = name;
+        tamedMonster.lvl = lvl;
+        tamedMonster.exp = exp;
+        tamedMonster.order = order;
         Log.d(DB_LOGTAG, "Adding values to tamed monster table: " + id);
         db.close();
         return tamedMonster;
     }
 
-    public void getDungeons() {
+    public List<Dungeon> getDungeons() {
+        List<Dungeon> dungeonList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
 
+        Cursor c = db.query("dungeon", null, null, null, null, null, null);
+
+        boolean success = c.moveToFirst();
+        if (!success) {
+            return dungeonList; //return empty list if false
+        }
+
+        //loop for every row in table
+        do {
+            Dungeon dungeon = new Dungeon();
+            dungeon.id = c.getLong(0);
+            dungeon.name = c.getString(c.getColumnIndex("dungeonName"));
+
+            dungeonList.add(dungeon);
+
+            Log.d(DB_LOGTAG, dungeon.id + ", " + dungeon.name + ", " + dungeon.floors + ", " + dungeon.exp);
+        } while (c.moveToNext()); //move cursor to next row
+
+        db.close();
+        return dungeonList;
     }
 
     public List<Monster> getMonsters() {
@@ -161,8 +190,30 @@ public class DBHelper extends SQLiteOpenHelper{
         return monsterList;
     }
 
-    public void getTamedMonsters() {
+    public List<TamedMonster> getTamedMonsters() {
+        List<TamedMonster> tamedMonsterList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
 
+        Cursor c = db.query("tamedMonster", null, null, null, null, null, null);
+
+        boolean success = c.moveToFirst();
+        if (!success) {
+            return tamedMonsterList; //return empty list if false
+        }
+
+        //loop for every row in table
+        do {
+            TamedMonster tamedMonster = new TamedMonster();
+            tamedMonster.id = c.getLong(0);
+            tamedMonster.name = c.getString(c.getColumnIndex("tamedMonsterName"));
+
+            tamedMonsterList.add(tamedMonster);
+
+            Log.d(DB_LOGTAG, tamedMonster.id + ", " + tamedMonster.name + ", " + tamedMonster.lvl + ", " + tamedMonster.exp + ", " + tamedMonster.order);
+        } while (c.moveToNext()); //move cursor to next row
+
+        db.close();
+        return tamedMonsterList;
     }
 
     @Override
