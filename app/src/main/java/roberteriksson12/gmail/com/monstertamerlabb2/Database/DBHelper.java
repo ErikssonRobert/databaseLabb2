@@ -142,7 +142,7 @@ public class DBHelper extends SQLiteOpenHelper{
         List<Dungeon> dungeonList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = db.query("dungeon", null, null, null, null, null, null);
+        Cursor c = db.query(TABLE_DUNGEON, null, null, null, null, null, null);
 
         boolean success = c.moveToFirst();
         if (!success) {
@@ -153,7 +153,7 @@ public class DBHelper extends SQLiteOpenHelper{
         do {
             Dungeon dungeon = new Dungeon();
             dungeon.id = c.getLong(0);
-            dungeon.name = c.getString(c.getColumnIndex("dungeonName"));
+            dungeon.name = c.getString(c.getColumnIndex(COLUMN_DUNGEON_NAME));
 
             dungeonList.add(dungeon);
 
@@ -168,7 +168,7 @@ public class DBHelper extends SQLiteOpenHelper{
         List<Monster> monsterList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = db.query("monster", null, null, null, null, null, null);
+        Cursor c = db.query(TABLE_MONSTER, null, null, null, null, null, null);
 
         boolean success = c.moveToFirst();
         if (!success) {
@@ -179,7 +179,7 @@ public class DBHelper extends SQLiteOpenHelper{
         do {
             Monster monster = new Monster();
             monster.id = c.getLong(0);
-            monster.name = c.getString(c.getColumnIndex("monsterName"));
+            monster.name = c.getString(c.getColumnIndex(COLUMN_MONSTER_NAME));
 
             monsterList.add(monster);
 
@@ -194,7 +194,7 @@ public class DBHelper extends SQLiteOpenHelper{
         List<TamedMonster> tamedMonsterList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = db.query("tamedMonster", null, null, null, null, null, null);
+        Cursor c = db.query(TABLE_TAMEDMONSTERS, null, null, null, null, null, null);
 
         boolean success = c.moveToFirst();
         if (!success) {
@@ -205,7 +205,7 @@ public class DBHelper extends SQLiteOpenHelper{
         do {
             TamedMonster tamedMonster = new TamedMonster();
             tamedMonster.id = c.getLong(0);
-            tamedMonster.name = c.getString(c.getColumnIndex("tamedMonsterName"));
+            tamedMonster.name = c.getString(c.getColumnIndex(COLUMN_TAMEDMONSTERS_NAME));
 
             tamedMonsterList.add(tamedMonster);
 
