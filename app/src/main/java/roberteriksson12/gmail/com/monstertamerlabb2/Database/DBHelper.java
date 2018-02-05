@@ -2,9 +2,13 @@ package roberteriksson12.gmail.com.monstertamerlabb2.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Dungeon;
 import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Monster;
@@ -104,7 +108,10 @@ public class DBHelper extends SQLiteOpenHelper{
         contentValues.put(COLUMN_MONSTER_LVL, lvl);
         contentValues.put(COLUMN_MONSTER_DUNGEONID, d_Id);
         long id = db.insert(TABLE_MONSTER, null, contentValues);
-        Monster monster = new Monster(name, lvl, d_Id);
+        Monster monster = new Monster();
+        monster.name = name;
+        monster.lvl = lvl;
+        monster.d_Id = d_Id;
         Log.d(DB_LOGTAG, "Adding values to monster table: " + id);
         db.close();
         return monster;
@@ -128,8 +135,30 @@ public class DBHelper extends SQLiteOpenHelper{
 
     }
 
-    public void getMonsters() {
+    public List<Monster> getMonsters() {
+        List<Monster> monsterList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
 
+        Cursor c = db.query("monster", null, null, null, null, null, null);
+
+        boolean success = c.moveToFirst();
+        if (!success) {
+            return monsterList; //return empty list if false
+        }
+
+        //loop for every row in table
+        do {
+            Monster monster = new Monster();
+            monster.id = c.getLong(0);
+            monster.name = c.getString(c.getColumnIndex("monsterName"));
+
+            monsterList.add(monster);
+
+            Log.d(DB_LOGTAG, monster.id + ", " + monster.name + ", " + monster.lvl + ", " + monster.d_Id);
+        } while (c.moveToNext()); //move cursor to next row
+
+        db.close();
+        return monsterList;
     }
 
     public void getTamedMonsters() {
