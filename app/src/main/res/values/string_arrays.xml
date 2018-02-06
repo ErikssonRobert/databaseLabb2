@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="monsterArray">
+        <item>Slime</item>
+        <item>Goblin</item>
+        <item>Gargoyle</item>
+        <item>Dragon</item>
+        <item>Vampire</item>
+    </string-array>
+
+    <string-array name="dungeonArray">
+        <item>Cave</item>
+        <item>Haunted Mansion</item>
+        <item>Catacombs</item>
+    </string-array>
+</resources>

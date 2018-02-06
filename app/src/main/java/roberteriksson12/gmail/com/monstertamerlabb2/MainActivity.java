@@ -1,6 +1,5 @@
 package roberteriksson12.gmail.com.monstertamerlabb2;
 
-import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,10 +9,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.view.Menu;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -21,8 +22,6 @@ import java.util.List;
 import roberteriksson12.gmail.com.monstertamerlabb2.Adapters.DungeonAdapter;
 import roberteriksson12.gmail.com.monstertamerlabb2.Adapters.MonsterAdapter;
 import roberteriksson12.gmail.com.monstertamerlabb2.Adapters.TamedMonsterAdapter;
-import roberteriksson12.gmail.com.monstertamerlabb2.AddActivities.AddDungeonActivity;
-import roberteriksson12.gmail.com.monstertamerlabb2.AddActivities.AddMonsterActivity;
 import roberteriksson12.gmail.com.monstertamerlabb2.Database.DBHelper;
 import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Dungeon;
 import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Monster;
@@ -40,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private TamedMonsterAdapter tamedMonsterAdapter;
 
     private FloatingActionButton fab;
+
+    private Spinner spinner;
+    private ArrayAdapter<CharSequence> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,10 @@ public class MainActivity extends AppCompatActivity {
             MenuInflater inflaterMonster = getMenuInflater();
             inflaterMonster.inflate(R.menu.menu_context_monster, menu);
         }
+        if (listView.getAdapter() == tamedMonsterAdapter) {
+            MenuInflater inflaterTamed = getMenuInflater();
+            inflaterTamed.inflate(R.menu.menu_context_tamed, menu);
+        }
     }
 
     //hantera clicks på context menyn
@@ -127,15 +133,21 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.show:
-                Toast.makeText(this, "Show monsters", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Showing monsters in dungeon", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tame:
-                Toast.makeText(this, "Tame", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Tamed monster", Toast.LENGTH_SHORT).show();
                 tamedMonsterList.add(dbHelper.addTamedMonster(monsterList.get(info.position)));
                 tamedMonsterAdapter.notifyDataSetChanged();
                 break;
+            case R.id.release:
+                Toast.makeText(this, "Released monster", Toast.LENGTH_SHORT).show();
+                dbHelper.deleteTamedMonster(tamedMonsterList.get(info.position));
+                tamedMonsterList.remove(info.position);
+                tamedMonsterAdapter.notifyDataSetChanged();
+                break;
             case R.id.del:
-                Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
                 if (listView.getAdapter() == dungeonAdapter) {
                     dbHelper.deleteDungeon(dungeonList.get(info.position));
                     dungeonList.remove(info.position);
@@ -156,10 +168,50 @@ public class MainActivity extends AppCompatActivity {
     public void onAddButtonPressed(View view) {
         if (listView.getAdapter() == dungeonAdapter) {
             setContentView(R.layout.activity_add_dungeon);
+            spinner = findViewById(R.id.spinner_dungeon_name);
+            adapter = ArrayAdapter.createFromResource(this, R.array.dungeonArray, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            final EditText editTextName = findViewById(R.id.edit_text_dungeon_name);
+
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+            {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+                {
+                    String selectedItem = parent.getItemAtPosition(position).toString();
+                    editTextName.setText(selectedItem);
+
+                } // to close the onItemSelected
+                public void onNothingSelected(AdapterView<?> parent)
+                {
+
+                }
+            });
         }
 
         if (listView.getAdapter() == monsterAdapter) {
             setContentView(R.layout.activity_add_monster);
+            spinner = findViewById(R.id.spinner_monster_name);
+            adapter = ArrayAdapter.createFromResource(this, R.array.monsterArray, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            final EditText editTextMonsterName = findViewById(R.id.edit_text_monster_name);
+
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+            {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+                {
+                    String selectedItem = parent.getItemAtPosition(position).toString();
+                    editTextMonsterName.setText(selectedItem);
+
+                } // to close the onItemSelected
+                public void onNothingSelected(AdapterView<?> parent)
+                {
+
+                }
+            });
         }
     }
 
@@ -180,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listView);
         listView.setAdapter(dungeonAdapter);
+        registerForContextMenu(listView);
         dungeonAdapter.notifyDataSetChanged();
     }
 
@@ -200,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listView);
         listView.setAdapter(monsterAdapter);
+        registerForContextMenu(listView);
         monsterAdapter.notifyDataSetChanged();
     }
 }

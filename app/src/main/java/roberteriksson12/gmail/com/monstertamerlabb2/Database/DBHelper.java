@@ -244,6 +244,21 @@ public class DBHelper extends SQLiteOpenHelper{
         return result == 1;
     }
 
+    public boolean deleteTamedMonster(TamedMonster tamedMonster) {
+        return deleteTamedMonster(tamedMonster.id);
+    }
+
+    private boolean deleteTamedMonster(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String[] selectionArgs = new String[]{Long.toString(id)};
+
+        int result = db.delete(TABLE_TAMEDMONSTERS, COLUMN_TAMEDMONSTERS_ID + "=?", selectionArgs);
+
+        db.close();
+        return result == 1;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
