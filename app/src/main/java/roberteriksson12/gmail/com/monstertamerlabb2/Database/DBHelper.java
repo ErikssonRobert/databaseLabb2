@@ -120,19 +120,15 @@ public class DBHelper extends SQLiteOpenHelper{
         return monster;
     }
 
-    public TamedMonster addTamedMonster(String name, int lvl, int exp, int order) {
+    public TamedMonster addTamedMonster(Monster monster) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_TAMEDMONSTERS_NAME, name);
-        contentValues.put(COLUMN_TAMEDMONSTERS_LVL, lvl);
-        contentValues.put(COLUMN_TAMEDMONSTERS_EXP, exp);
-        contentValues.put(COLUMN_TAMEDMONSTERS_ORDER, order);
+        contentValues.put(COLUMN_TAMEDMONSTERS_NAME, monster.name);
+        contentValues.put(COLUMN_TAMEDMONSTERS_LVL, monster.lvl);
         long id = db.insert(TABLE_TAMEDMONSTERS, null, contentValues);
         TamedMonster tamedMonster = new TamedMonster();
-        tamedMonster.name = name;
-        tamedMonster.lvl = lvl;
-        tamedMonster.exp = exp;
-        tamedMonster.order = order;
+        tamedMonster.name = monster.name;
+        tamedMonster.lvl = monster.lvl;
         Log.d(DB_LOGTAG, "Adding values to tamed monster table: " + id);
         db.close();
         return tamedMonster;
@@ -209,11 +205,43 @@ public class DBHelper extends SQLiteOpenHelper{
 
             tamedMonsterList.add(tamedMonster);
 
-            Log.d(DB_LOGTAG, tamedMonster.id + ", " + tamedMonster.name + ", " + tamedMonster.lvl + ", " + tamedMonster.exp + ", " + tamedMonster.order);
+            Log.d(DB_LOGTAG, tamedMonster.id + ", " + tamedMonster.name + ", " + tamedMonster.lvl);
         } while (c.moveToNext()); //move cursor to next row
 
         db.close();
         return tamedMonsterList;
+    }
+
+    public boolean deleteDungeon(Dungeon dungeon){
+
+        return deleteDungeon(dungeon.id);
+    }
+
+    private boolean deleteDungeon(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String[] selectionArgs = new String[]{Long.toString(id)};
+
+        int result = db.delete(TABLE_DUNGEON, COLUMN_DUNGEON_ID + "=?", selectionArgs);
+
+        db.close();
+        return result == 1;
+    }
+
+    public boolean deleteMonster(Monster monster){
+
+        return deleteMonster(monster.id);
+    }
+
+    private boolean deleteMonster(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String[] selectionArgs = new String[]{Long.toString(id)};
+
+        int result = db.delete(TABLE_MONSTER, COLUMN_MONSTER_ID + "=?", selectionArgs);
+
+        db.close();
+        return result == 1;
     }
 
     @Override

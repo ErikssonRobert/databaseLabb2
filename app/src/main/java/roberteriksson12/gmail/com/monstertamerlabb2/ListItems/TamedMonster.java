@@ -8,6 +8,4 @@ public class TamedMonster {
     public long id;
     public String name;
     public int lvl;
-    public int exp;
-    public int order;
 }

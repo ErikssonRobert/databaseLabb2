@@ -1,11 +1,16 @@
 package roberteriksson12.gmail.com.monstertamerlabb2;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.view.Menu;
@@ -34,12 +39,16 @@ public class MainActivity extends AppCompatActivity {
     private DungeonAdapter dungeonAdapter;
     private TamedMonsterAdapter tamedMonsterAdapter;
 
+    private FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(dbHelper.DB_LOGTAG, "Skapar databasen");
         initialize();
+        fab = findViewById(R.id.fab_add);
+        fab.hide();
     }
 
     public void initialize() {
@@ -58,12 +67,14 @@ public class MainActivity extends AppCompatActivity {
         tamedMonsterAdapter.notifyDataSetChanged();
     }
 
+    //skapa menyn i övre hörnet
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    //hantera clicks på menyn
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -73,19 +84,73 @@ public class MainActivity extends AppCompatActivity {
                 //connect DungeonAdapter to listView
                 listView = findViewById(R.id.listView);
                 listView.setAdapter(dungeonAdapter);
+                fab.show();
+                registerForContextMenu(listView);
                 break;
             case R.id.mon:
                 //connect monsterAdapter to listView
                 listView = findViewById(R.id.listView);
                 listView.setAdapter(monsterAdapter);
+                registerForContextMenu(listView);
+                fab.show();
                 break;
             case R.id.tam:
                 //connect tamedMonstersAdapter to listView
                 listView = findViewById(R.id.listView);
                 listView.setAdapter(tamedMonsterAdapter);
+                fab.hide();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //skapa context meny
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        if (listView.getAdapter() == dungeonAdapter) {
+            MenuInflater inflaterDungeon = getMenuInflater();
+            inflaterDungeon.inflate(R.menu.menu_context_dungeon, menu);
+        }
+        if (listView.getAdapter() == monsterAdapter) {
+            MenuInflater inflaterMonster = getMenuInflater();
+            inflaterMonster.inflate(R.menu.menu_context_monster, menu);
+        }
+    }
+
+    //hantera clicks på context menyn
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        super.onContextItemSelected(item);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch (item.getItemId()) {
+            case R.id.show:
+                Toast.makeText(this, "Show monsters", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tame:
+                Toast.makeText(this, "Tame", Toast.LENGTH_SHORT).show();
+                tamedMonsterList.add(dbHelper.addTamedMonster(monsterList.get(info.position)));
+                tamedMonsterAdapter.notifyDataSetChanged();
+                break;
+            case R.id.del:
+                Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
+                if (listView.getAdapter() == dungeonAdapter) {
+                    dbHelper.deleteDungeon(dungeonList.get(info.position));
+                    dungeonList.remove(info.position);
+                    dungeonAdapter.notifyDataSetChanged();
+                    break;
+                }
+                if (listView.getAdapter() == monsterAdapter) {
+                    dbHelper.deleteMonster(monsterList.get(info.position));
+                    monsterList.remove(info.position);
+                    monsterAdapter.notifyDataSetChanged();
+                    break;
+                }
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     public void onAddButtonPressed(View view) {
@@ -110,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
         DBHelper dbHelper = new DBHelper(this);
         dungeonList.add(dbHelper.addDungeon(editTextName.getText().toString(), Integer.parseInt(editTextFloors.getText().toString()), Integer.parseInt(editTextExp.getText().toString())));
-        Toast.makeText(this, "New dungeon added", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "New dungeon: " + editTextName.getText().toString() +  " added", Toast.LENGTH_SHORT).show();
 
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listView);
@@ -130,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
         DBHelper dbHelper = new DBHelper(this);
         monsterList.add(dbHelper.addMonster(editTextMonsterName.getText().toString(), Integer.parseInt(editTextMonsterLevel.getText().toString()), Integer.parseInt(editTextMonsterDungeonId.getText().toString())));
-        Toast.makeText(this, "New dungeon added", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "New monster: " + editTextMonsterName.getText().toString() + " added", Toast.LENGTH_SHORT).show();
 
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listView);
