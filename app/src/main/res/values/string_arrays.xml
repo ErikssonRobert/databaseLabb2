@@ -6,11 +6,63 @@
         <item>Gargoyle</item>
         <item>Dragon</item>
         <item>Vampire</item>
+        <item>Ghost</item>
+        <item>Giant spider</item>
+    </string-array>
+
+    <string-array name="slime_array">
+        <item>1</item>
+        <item>Cave</item>
+    </string-array>
+
+    <string-array name="goblin_array">
+        <item>4</item>
+        <item>Cave</item>
+    </string-array>
+
+    <string-array name="gargoyle_array">
+        <item>10</item>
+        <item>Haunted mansion</item>
+    </string-array>
+
+    <string-array name="dragon_array">
+        <item>15</item>
+        <item>Cave</item>
+    </string-array>
+
+    <string-array name="vampire_array">
+        <item>12</item>
+        <item>Catacombs</item>
+    </string-array>
+
+    <string-array name="ghost_array">
+        <item>8</item>
+        <item>Haunted mansion</item>
+    </string-array>
+
+    <string-array name="giant_spider_array">
+        <item>6</item>
+        <item>Catacombs</item>
     </string-array>
 
     <string-array name="dungeonArray">
         <item>Cave</item>
-        <item>Haunted Mansion</item>
+        <item>Haunted mansion</item>
         <item>Catacombs</item>
+    </string-array>
+
+    <string-array name="cave_array">
+        <item>4</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="haunted_mansion_array">
+        <item>6</item>
+        <item>300</item>
+    </string-array>
+
+    <string-array name="catacombs_array">
+        <item>2</item>
+        <item>600</item>
     </string-array>
 </resources>

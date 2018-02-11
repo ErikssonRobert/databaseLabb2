@@ -56,6 +56,10 @@ public class TamedMonsterAdapter extends BaseAdapter {
 
         TextView textView = view.findViewById(R.id.textViewName);
         textView.setText(tamedMonsterList.get(i).name);
+        TextView textViewLevel = view.findViewById(R.id.textView2);
+        textViewLevel.setText("Level: " + String.valueOf(tamedMonsterList.get(i).lvl));
+        TextView textViewTamedAt = view.findViewById(R.id.textView3);
+        textViewTamedAt.setText("Tamed at: " + tamedMonsterList.get(i).tamedAt);
 
         return view;
     }

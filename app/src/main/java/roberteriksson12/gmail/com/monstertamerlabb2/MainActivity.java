@@ -1,5 +1,6 @@
 package roberteriksson12.gmail.com.monstertamerlabb2;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,18 +11,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.view.Menu;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import roberteriksson12.gmail.com.monstertamerlabb2.Adapters.DungeonAdapter;
 import roberteriksson12.gmail.com.monstertamerlabb2.Adapters.MonsterAdapter;
 import roberteriksson12.gmail.com.monstertamerlabb2.Adapters.TamedMonsterAdapter;
+import roberteriksson12.gmail.com.monstertamerlabb2.AddActivities.AddDungeonActivity;
+import roberteriksson12.gmail.com.monstertamerlabb2.AddActivities.AddMonsterActivity;
 import roberteriksson12.gmail.com.monstertamerlabb2.Database.DBHelper;
 import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Dungeon;
 import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Monster;
@@ -29,19 +30,18 @@ import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.TamedMonster;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DBHelper dbHelper = new DBHelper(this);
+    private DBHelper dbHelper;
     private ListView listView;
     private List<Monster> monsterList;
     private List<Dungeon> dungeonList;
     private List<TamedMonster> tamedMonsterList;
+    private List<Monster> monstersInDungeonList;
     private MonsterAdapter monsterAdapter;
+    private MonsterAdapter monstersInDungeonAdapter;
     private DungeonAdapter dungeonAdapter;
     private TamedMonsterAdapter tamedMonsterAdapter;
 
     private FloatingActionButton fab;
-
-    private Spinner spinner;
-    private ArrayAdapter<CharSequence> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initialize() {
+        dbHelper = new DBHelper(this);
         //fill lists
         monsterList = dbHelper.getMonsters();
         dungeonList = dbHelper.getDungeons();
@@ -64,9 +65,22 @@ public class MainActivity extends AppCompatActivity {
         monsterAdapter = new MonsterAdapter(this, monsterList);
         tamedMonsterAdapter = new TamedMonsterAdapter(this, tamedMonsterList);
 
-        dungeonAdapter.notifyDataSetChanged();
-        monsterAdapter.notifyDataSetChanged();
-        tamedMonsterAdapter.notifyDataSetChanged();
+        if (getIntent().getIntExtra("back", 0) == 0){
+            Log.d(dbHelper.DB_LOGTAG, "" + 0);
+            return;
+        }
+        if (getIntent().getIntExtra("back", 0) == 1){
+            Log.d(dbHelper.DB_LOGTAG, "" + 1);
+            listView = findViewById(R.id.listView);
+            listView.setAdapter(dungeonAdapter);
+        }
+        if (getIntent().getIntExtra("back", 0) == 2){
+            Log.d(dbHelper.DB_LOGTAG, "" + 2);
+            listView = findViewById(R.id.listView);
+            listView.setAdapter(monsterAdapter);
+        }
+        registerForContextMenu(listView);
+
     }
 
     //skapa menyn i övre hörnet
@@ -134,6 +148,9 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.show:
                 Toast.makeText(this, "Showing monsters in dungeon", Toast.LENGTH_SHORT).show();
+                monstersInDungeonList = dbHelper.getMonstersInDungeon(dungeonList.get(info.position));
+                monstersInDungeonAdapter = new MonsterAdapter(this, monstersInDungeonList);
+                listView.setAdapter(monstersInDungeonAdapter);
                 break;
             case R.id.tame:
                 Toast.makeText(this, "Tamed monster", Toast.LENGTH_SHORT).show();
@@ -167,93 +184,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAddButtonPressed(View view) {
         if (listView.getAdapter() == dungeonAdapter) {
-            setContentView(R.layout.activity_add_dungeon);
-            spinner = findViewById(R.id.spinner_dungeon_name);
-            adapter = ArrayAdapter.createFromResource(this, R.array.dungeonArray, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-
-            final EditText editTextName = findViewById(R.id.edit_text_dungeon_name);
-
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-            {
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-                {
-                    String selectedItem = parent.getItemAtPosition(position).toString();
-                    editTextName.setText(selectedItem);
-
-                } // to close the onItemSelected
-                public void onNothingSelected(AdapterView<?> parent)
-                {
-
-                }
-            });
+            Intent dungeonIntent = new Intent(this, AddDungeonActivity.class);
+            startActivity(dungeonIntent);
+            this.finish();
         }
 
         if (listView.getAdapter() == monsterAdapter) {
-            setContentView(R.layout.activity_add_monster);
-            spinner = findViewById(R.id.spinner_monster_name);
-            adapter = ArrayAdapter.createFromResource(this, R.array.monsterArray, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-
-            final EditText editTextMonsterName = findViewById(R.id.edit_text_monster_name);
-
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-            {
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-                {
-                    String selectedItem = parent.getItemAtPosition(position).toString();
-                    editTextMonsterName.setText(selectedItem);
-
-                } // to close the onItemSelected
-                public void onNothingSelected(AdapterView<?> parent)
-                {
-
-                }
-            });
+            Intent monsterIntent = new Intent(this, AddMonsterActivity.class);
+            startActivity(monsterIntent);
+            this.finish();
         }
-    }
-
-    public void onAddDungeonButtonPressed(View view) {
-        EditText editTextName = findViewById(R.id.edit_text_dungeon_name);
-        EditText editTextFloors = findViewById(R.id.edit_text_dungeon_floors);
-        EditText editTextExp = findViewById(R.id.edit_text_dungeon_exp);
-
-        if (editTextName.getText().toString().isEmpty() || editTextFloors.getText().toString().isEmpty() || editTextExp.getText().toString().isEmpty()) {
-            Toast.makeText(this, "All fields must be filled in", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        DBHelper dbHelper = new DBHelper(this);
-        dungeonList.add(dbHelper.addDungeon(editTextName.getText().toString(), Integer.parseInt(editTextFloors.getText().toString()), Integer.parseInt(editTextExp.getText().toString())));
-        Toast.makeText(this, "New dungeon: " + editTextName.getText().toString() +  " added", Toast.LENGTH_SHORT).show();
-
-        setContentView(R.layout.activity_main);
-        listView = findViewById(R.id.listView);
-        listView.setAdapter(dungeonAdapter);
-        registerForContextMenu(listView);
-        dungeonAdapter.notifyDataSetChanged();
-    }
-
-    public void onAddMonsterButtonPressed(View view) {
-        EditText editTextMonsterName = findViewById(R.id.edit_text_monster_name);
-        EditText editTextMonsterLevel = findViewById(R.id.edit_text_monster_level);
-        EditText editTextMonsterDungeonId = findViewById(R.id.edit_text_monster_dungeon_id);
-
-        if (editTextMonsterName.getText().toString().isEmpty() || editTextMonsterLevel.getText().toString().isEmpty() || editTextMonsterDungeonId.getText().toString().isEmpty()) {
-            Toast.makeText(this, "All fields must be filled in", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        DBHelper dbHelper = new DBHelper(this);
-        monsterList.add(dbHelper.addMonster(editTextMonsterName.getText().toString(), Integer.parseInt(editTextMonsterLevel.getText().toString()), Integer.parseInt(editTextMonsterDungeonId.getText().toString())));
-        Toast.makeText(this, "New monster: " + editTextMonsterName.getText().toString() + " added", Toast.LENGTH_SHORT).show();
-
-        setContentView(R.layout.activity_main);
-        listView = findViewById(R.id.listView);
-        listView.setAdapter(monsterAdapter);
-        registerForContextMenu(listView);
-        monsterAdapter.notifyDataSetChanged();
     }
 }

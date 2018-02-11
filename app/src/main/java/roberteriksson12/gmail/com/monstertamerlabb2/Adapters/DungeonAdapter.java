@@ -54,6 +54,10 @@ public class DungeonAdapter extends BaseAdapter {
 
         TextView textView = view.findViewById(R.id.textViewName);
         textView.setText(dungeonList.get(i).name);
+        TextView textViewFloors = view.findViewById(R.id.textView2);
+        textViewFloors.setText("Number of floors: " + String.valueOf(dungeonList.get(i).floors));
+        TextView textViewReward = view.findViewById(R.id.textView3);
+        textViewReward.setText("Reward: " + String.valueOf(dungeonList.get(i).exp) + " experience");
 
         return view;
     }

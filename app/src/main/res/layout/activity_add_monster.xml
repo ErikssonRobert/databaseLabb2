@@ -3,28 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <EditText
-        android:id="@+id/edit_text_monster_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Name of monster"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/spinner_monster_name"
-        android:layout_marginTop="16dp"/>
+    android:layout_height="match_parent"
+    tools:context="roberteriksson12.gmail.com.monstertamerlabb2.AddActivities.AddMonsterActivity">
 
     <Spinner
         android:id="@+id/spinner_monster_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/edit_text_monster_name"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="32dp">
+        android:layout_marginTop="20dp">
     </Spinner>
+
+    <EditText
+        android:id="@+id/edit_text_monster_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name of monster"
+        app:layout_constraintTop_toBottomOf="@id/spinner_monster_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"/>
 
     <EditText
         android:id="@+id/edit_text_monster_level"

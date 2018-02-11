@@ -1,6 +1,7 @@
 package roberteriksson12.gmail.com.monstertamerlabb2.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import roberteriksson12.gmail.com.monstertamerlabb2.Database.DBHelper;
 import roberteriksson12.gmail.com.monstertamerlabb2.ListItems.Monster;
 import roberteriksson12.gmail.com.monstertamerlabb2.R;
 
@@ -54,8 +56,12 @@ public class MonsterAdapter extends BaseAdapter {
             view = convertView;
         }
 
-        TextView textView = view.findViewById(R.id.textViewName);
-        textView.setText(monsterList.get(i).name);
+        TextView textViewName = view.findViewById(R.id.textViewName);
+        textViewName.setText(monsterList.get(i).name);
+        TextView textViewLevel = view.findViewById(R.id.textView2);
+        textViewLevel.setText("Level: " + String.valueOf(monsterList.get(i).lvl));
+        TextView textViewDungeon = view.findViewById(R.id.textView3);
+        textViewDungeon.setText("Habitat: " + monsterList.get(i).dungeon);
 
         return view;
     }

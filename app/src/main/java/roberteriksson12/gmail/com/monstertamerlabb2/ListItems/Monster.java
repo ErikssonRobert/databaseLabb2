@@ -8,5 +8,6 @@ public class Monster {
     public long id;
     public String name;
     public int lvl;
-    public int d_Id;
+    public long d_Id;
+    public String dungeon;
 }
